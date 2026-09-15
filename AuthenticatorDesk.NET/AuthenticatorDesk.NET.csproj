@@ -1,0 +1,156 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <!-- Older Windows 10 installations can fail before Main when CET is enabled.
+         Apply to both regular and single-file apphosts; keep this at project scope.
+         https://learn.microsoft.com/dotnet/core/compatibility/interop/9.0/cet-support -->
+    <CetCompat>false</CetCompat>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
+    <AssemblyName>AuthenticatorDesk</AssemblyName>
+    <RootNamespace>AuthenticatorDesk</RootNamespace>
+    <ApplicationIcon>Assets\AuthenticatorDesk.Icon.ico</ApplicationIcon>
+    <Product>Authenticator Desk</Product>
+    <Description>Modern, local-first desktop authenticator for Windows.</Description>
+    <Authors>AuthenticatorDesk contributors</Authors>
+    <Copyright>Portions copyright © 2011, 2013, 2015 Colin Mackie; modifications copyright © 2026 AuthenticatorDesk contributors.</Copyright>
+    <PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
+    <RepositoryType>git</RepositoryType>
+    <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
+    <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
+    <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\AuthenticatorDesk.Icon.ico"
+                      LogicalName="AuthenticatorDesk.Assets.AuthenticatorDesk.Icon.ico" />
+    <EmbeddedResource Include="Languages\*.json"
+                      Exclude="Languages\language-pack.schema.json" />
+    <None Update="Languages\**\*.json"
+          CopyToOutputDirectory="PreserveNewest"
+          CopyToPublishDirectory="PreserveNewest"
+          ExcludeFromSingleFile="true" />
+    <None Update="Languages\README.md;Languages\README.zh-CN.md"
+          CopyToOutputDirectory="PreserveNewest"
+          CopyToPublishDirectory="PreserveNewest"
+          ExcludeFromSingleFile="true" />
+    <None Include="..\LICENSE.txt"
+          Link="LICENSE.txt"
+          CopyToOutputDirectory="PreserveNewest"
+          CopyToPublishDirectory="PreserveNewest"
+          ExcludeFromSingleFile="true" />
+    <None Include="..\THIRD-PARTY-NOTICES.md"
+          Link="THIRD-PARTY-NOTICES.md"
+          CopyToOutputDirectory="PreserveNewest"
+          CopyToPublishDirectory="PreserveNewest"
+          ExcludeFromSingleFile="true" />
+    <None Include="..\WINAUTH-ATTRIBUTION.md"
+          Link="WINAUTH-ATTRIBUTION.md"
+          CopyToOutputDirectory="PreserveNewest"
+          CopyToPublishDirectory="PreserveNewest"
+          ExcludeFromSingleFile="true" />
+    <None Include="..\WINAUTH-ATTRIBUTION.zh-CN.md"
+          Link="WINAUTH-ATTRIBUTION.zh-CN.md"
+          CopyToOutputDirectory="PreserveNewest"
+          CopyToPublishDirectory="PreserveNewest"
+          ExcludeFromSingleFile="true" />
+    <None Include="..\THIRD-PARTY-LICENSES\**\*"
+          Link="THIRD-PARTY-LICENSES\%(RecursiveDir)%(Filename)%(Extension)"
+          CopyToPublishDirectory="PreserveNewest"
+          ExcludeFromSingleFile="true" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="UI\MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="UI\Dialogs\AboutLicensesDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="UI\Dialogs\EntryEditorForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="UI\Dialogs\PasswordDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="UI\Dialogs\QrExportDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="UI\Dialogs\SensitiveValueDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="UI\Dialogs\TextImportDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <EmbeddedResource Update="UI\MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UI\Dialogs\AboutLicensesDialog.resx">
+      <DependentUpon>AboutLicensesDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UI\Dialogs\EntryEditorForm.resx">
+      <DependentUpon>EntryEditorForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UI\Dialogs\PasswordDialog.resx">
+      <DependentUpon>PasswordDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UI\Dialogs\QrExportDialog.resx">
+      <DependentUpon>QrExportDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UI\Dialogs\SensitiveValueDialog.resx">
+      <DependentUpon>SensitiveValueDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UI\Dialogs\TextImportDialog.resx">
+      <DependentUpon>TextImportDialog.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AntdUI" Version="2.4.3" />
+    <PackageReference Include="QRCoder" Version="1.8.0" />
+    <PackageReference Include="ZXing.Net.Bindings.Windows.Compatibility" Version="0.16.14" />
+  </ItemGroup>
+
+  <Target Name="CopySelfContainedRuntimeLegalFiles"
+          AfterTargets="Publish"
+          Condition="'$(SelfContained)' == 'true'">
+    <ItemGroup>
+      <_RuntimePackForLegalFiles Include="@(RuntimePack)"
+                                 Condition="'%(RuntimePack.NuGetPackageId)' != '' and
+                                            '%(RuntimePack.NuGetPackageVersion)' != '' and
+                                            ('%(RuntimePack.FrameworkName)' == 'Microsoft.NETCore.App' or
+                                             '%(RuntimePack.FrameworkName)' == 'Microsoft.WindowsDesktop.App')" />
+      <_RuntimeLicenseTxt Include="@(_RuntimePackForLegalFiles)"
+                          Condition="Exists('$(NuGetPackageRoot)\%(_RuntimePackForLegalFiles.NuGetPackageId)\%(_RuntimePackForLegalFiles.NuGetPackageVersion)\LICENSE.TXT')">
+        <SourcePath>$(NuGetPackageRoot)\%(_RuntimePackForLegalFiles.NuGetPackageId)\%(_RuntimePackForLegalFiles.NuGetPackageVersion)\LICENSE.TXT</SourcePath>
+        <TargetPath>$(PublishDir)THIRD-PARTY-LICENSES\dotnet-runtime\%(_RuntimePackForLegalFiles.NuGetPackageId)-%(_RuntimePackForLegalFiles.NuGetPackageVersion)\LICENSE.TXT</TargetPath>
+      </_RuntimeLicenseTxt>
+      <_RuntimeLicenseNoExtension Include="@(_RuntimePackForLegalFiles)"
+                                  Condition="Exists('$(NuGetPackageRoot)\%(_RuntimePackForLegalFiles.NuGetPackageId)\%(_RuntimePackForLegalFiles.NuGetPackageVersion)\LICENSE')">
+        <SourcePath>$(NuGetPackageRoot)\%(_RuntimePackForLegalFiles.NuGetPackageId)\%(_RuntimePackForLegalFiles.NuGetPackageVersion)\LICENSE</SourcePath>
+        <TargetPath>$(PublishDir)THIRD-PARTY-LICENSES\dotnet-runtime\%(_RuntimePackForLegalFiles.NuGetPackageId)-%(_RuntimePackForLegalFiles.NuGetPackageVersion)\LICENSE</TargetPath>
+      </_RuntimeLicenseNoExtension>
+      <_RuntimeThirdPartyNotices Include="@(_RuntimePackForLegalFiles)"
+                                 Condition="Exists('$(NuGetPackageRoot)\%(_RuntimePackForLegalFiles.NuGetPackageId)\%(_RuntimePackForLegalFiles.NuGetPackageVersion)\THIRD-PARTY-NOTICES.TXT')">
+        <SourcePath>$(NuGetPackageRoot)\%(_RuntimePackForLegalFiles.NuGetPackageId)\%(_RuntimePackForLegalFiles.NuGetPackageVersion)\THIRD-PARTY-NOTICES.TXT</SourcePath>
+        <TargetPath>$(PublishDir)THIRD-PARTY-LICENSES\dotnet-runtime\%(_RuntimePackForLegalFiles.NuGetPackageId)-%(_RuntimePackForLegalFiles.NuGetPackageVersion)\THIRD-PARTY-NOTICES.TXT</TargetPath>
+      </_RuntimeThirdPartyNotices>
+    </ItemGroup>
+
+    <Copy SourceFiles="@(_RuntimeLicenseTxt->'%(SourcePath)')"
+          DestinationFiles="@(_RuntimeLicenseTxt->'%(TargetPath)')"
+          SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(_RuntimeLicenseNoExtension->'%(SourcePath)')"
+          DestinationFiles="@(_RuntimeLicenseNoExtension->'%(TargetPath)')"
+          SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(_RuntimeThirdPartyNotices->'%(SourcePath)')"
+          DestinationFiles="@(_RuntimeThirdPartyNotices->'%(TargetPath)')"
+          SkipUnchangedFiles="true" />
+  </Target>
+
+</Project>

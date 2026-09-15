@@ -1,0 +1,5 @@
+git remote set-url --push origin https://gitee.com/lnsyzjw/authenticator-desk.-net
+git remote set-url --add --push origin https://github.com/1609676823/AuthenticatorDesk.NET
+git remote -v
+
+git remote set-url origin https://gitee.com/lnsyzjw/authenticator-desk.-net

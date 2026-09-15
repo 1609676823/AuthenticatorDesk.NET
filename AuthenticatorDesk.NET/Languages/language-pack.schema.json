@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://authenticatordesk.local/schemas/language-pack.schema.json",
+  "title": "AuthenticatorDesk language pack",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "locale",
+    "name",
+    "nativeName",
+    "strings"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "schemaVersion": {
+      "const": 1
+    },
+    "locale": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 64,
+      "description": "A .NET-recognized BCP-47 language tag that matches the filename."
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "description": "Language name in English."
+    },
+    "nativeName": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "description": "Language name written in that language."
+    },
+    "authors": {
+      "type": "array",
+      "maxItems": 32,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 128
+      },
+      "description": "Optional translator credits."
+    },
+    "strings": {
+      "type": "object",
+      "maxProperties": 5000,
+      "propertyNames": {
+        "minLength": 1,
+        "maxLength": 256
+      },
+      "additionalProperties": {
+        "type": "string",
+        "maxLength": 4096
+      }
+    }
+  }
+}

@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="AuthenticatorDesk.NET/AuthenticatorDesk.NET.csproj" />
+  <Project Path="AuthenticatorDesk.SmokeTests/AuthenticatorDesk.SmokeTests.csproj" />
+</Solution>
